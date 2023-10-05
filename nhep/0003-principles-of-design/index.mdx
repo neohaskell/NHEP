@@ -4,13 +4,13 @@ authors: [nick]
 date: 2023-10-03T00:00
 ---
 
-:::info STATUS - IN PROGRESS
+:::tip STATUS - ACCEPTED
 :::
 
 ## Introduction
 
 This document defines the design principles that guide the design and implementation processes of NeoHaskell. They are
-intended to guide the decisions in both the high level, as well as the low level, decision making process of the project.
+intended to guide the decisions in both the high-level, as well as the low-level, decision-making process of the project.
 
 Their purpose is to ensure that the project prioritizes the correct aspects of the design and implementation, and that
 [the target audience and user persona](/blog/0002-project-target) are kept in mind at all times, as they are the most
@@ -18,12 +18,48 @@ important stakeholders of the project.
 
 ## Principle of Least Astonishment
 
-The Principle of Least Astonishment, also known as the Principle of Least Surprise, is a guideline in user interface and software design that emphasizes creating systems which behave in a manner consistent with user expectations, thereby minimizing user surprise and confusion. The principle advises that system components should act in alignment with widely accepted conventions and their syntactical indications. It encourages designers to ensure that the behavior of a system or feature closely matches users' existing knowledge and expectations to reduce the learning curve and prevent user astonishment.
+The Principle of Least Astonishment, also known as the Principle of Least Surprise, is a guideline in user interface and software design that emphasizes creating systems that behave in a manner consistent with user expectations, thereby minimizing user surprise and confusion. The principle advises that system components should act in alignment with widely accepted conventions and their syntactical indications. It encourages designers to ensure that the behavior of a system or feature closely matches users' existing knowledge and expectations to reduce the learning curve and prevent user astonishment. Although the principle originated in the late 1960s, it remains relevant in different technological platforms and settings to ensure that functionalities such as keyboard shortcuts, widgets, or method names are intuitive and adhere to familiar patterns for users, thereby enhancing user experience and system usability.
 
-Although the principle originated in the late 1960s, it remains relevant in different technological platforms and settings to ensure that functionalities such as keyboard shortcuts, widgets, or method names are intuitive and adhere to familiar patterns for users, thereby enhancing user experience and system usability.
+### Examples
+
+Those might not look like much, but they are details that end up stacking and streamlining the overall experience. The aim is to reduce the cognitive load on the user, and they are already learning a new language and ecosystem, so we should remove as much
+stuff to learn as possible. For example, promoting:
+
+- JSON or YAML as configuration formats instead of TOML or Dhall.
+- Git as the version control software instead of Darcs or Pijul.
+- GitHub as the code hosting platform instead of GitLab or BitBucket.
+- Visual Studio Code as the IDE instead of Emacs or Vim.
 
 ## Principle of Developer Happiness
 
-The Principle of Developer Happiness prioritizes establishing an environment that aligns with software developers' professional and personal expectations, thereby enhancing satisfaction and retention. It underscores creating engaging experiences and a supportive culture where developers are fairly compensated, and find alignment with the group's mission. Additionally, it advocates for the use of efficient tools and technologies to streamline the development process and save time. Finally, it emphasizes continuous visibility into and assessment of developer efficiency through surveys and feedback, ensuring a continually optimized working environment that resonates with developer needs and expectations. This principle aims to meld operational strategies with developer satisfaction, ensuring an atmosphere that intuitively supports and developers.
+The Principle of Developer Happiness prioritizes establishing an environment that aligns with software developers' professional and personal expectations, thereby enhancing satisfaction and retention. It underscores creating engaging experiences and a supportive culture where developers are fairly compensated, and find alignment with the group's mission. Additionally, it advocates for the use of efficient tools and technologies to streamline the development process and save time. Finally, it emphasizes continuous visibility into and assessment of developer efficiency through surveys and feedback, ensuring a continually optimized working environment that resonates with developer needs and expectations. This principle aims to meld operational strategies with developer satisfaction, ensuring an atmosphere that intuitively supports developers.
+
+### Examples
+
+This principle emphasizes creating an environment that aligns with the expectations of both developers and users of NeoHaskell. It centers around fostering satisfaction, engagement, and a supportive community. Here are some examples:
+
+- **Clear Documentation**: Provide user-friendly and comprehensive documentation with code examples.
+- **Community Engagement**: Encourage active participation and collaboration within the open-source community.
+- **Transparent Decision-Making**: Maintain transparency in language development decisions.
+- **Inclusive Onboarding**: Offer resources for developers of all skill levels.
+- **Recognition**: Acknowledge and appreciate contributions and projects from the community.
+- **Feedback Channels**: Create accessible channels for users and contributors to provide input and report issues.
 
 ## Principle of Least Effort
+
+The Principle of Least Effort underscores the axiom that entities, within a given context, will opt for the solution that requires the minimal amount of work or complexity to achieve a specific goal. Applied within the realm of software design and development, it emphasizes creating systems and interfaces that are straightforward, easy to comprehend, and simple to interact with, thereby reducing the cognitive and operational load on both the user and developer. On the user's side, interfaces should be intuitive, providing the easiest pathway to accomplish tasks with minimum steps and complexity. For developers, this principle encourages the creation of code and architectures that are clean, succinct, and straightforward to understand and modify. Ultimately, adhering to the Principle of Least Effort enables the creation of more user-friendly applications and sustainably maintainable codebases, promoting efficient and effective interactions for all involved parties.
+
+### Examples
+
+- **Simple Syntax**: Design the language with a straightforward and intuitive syntax to reduce the cognitive load on developers using the language.
+- **Clear and Concise Documentation**: Provide comprehensive yet concise documentation to help users understand and utilize the language effectively without unnecessary complexity.
+- **Standard Libraries**: Include a well-organized standard library that simplifies common programming tasks, reducing the effort required to implement them from scratch.
+- **Error Handling**: Implement user-friendly error messages and handling mechanisms that assist developers in identifying and resolving issues efficiently.
+- **Community Support**: Foster a supportive community where developers can seek help, share knowledge, and collaborate, reducing the effort needed to overcome challenges.
+- **Version Management**: Streamline version management and updates to make it easy for users to adopt new language features and improvements.
+
+## Conclusion
+
+In conclusion, the design principles outlined for NeoHaskell serve as a fundamental compass for the project's development and implementation processes. The Principle of Least Astonishment underscores the importance of aligning system behavior with user expectations, enhancing user experience and usability. The Principle of Developer Happiness focuses on creating an environment that satisfies both developers and users, emphasizing engagement, transparency, and continuous improvement. Lastly, the Principle of Least Effort promotes simplicity and efficiency, reducing the cognitive and operational load on users and developers alike.
+
+These principles collectively ensure that NeoHaskell remains user-centric, developer-friendly, and efficient throughout its development journey. By adhering to these guiding principles, NeoHaskell aims to not only meet but exceed the expectations of its target audience and user persona, ultimately leading to a successful and user-satisfying language.
