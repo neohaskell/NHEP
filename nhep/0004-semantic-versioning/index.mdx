@@ -1,0 +1,40 @@
+---
+title: NHEP 4 - Semantic Versioning
+authors: [nick]
+date: 2023-10-06T00:00
+---
+
+:::tip STATUS - ACCEPTED
+:::
+
+## Introduction
+
+In the context of the NeoHaskell ecosystem, we employ the [Semantic Versioning](https://semver.org/) (SemVer) schema. SemVer consists of a set of rules and guidelines for assigning and incrementing version numbers within our software development process. By embracing SemVer, NeoHaskell addresses the intricacies of managing dependencies, especially as the ecosystem complexity evolves. The primary objective of utilizing Semantic Versioning within the NeoHaskell ecosystem is to ensure that our version numbers are both transparent and informative, effectively communicating the nature of changes made to our software.
+
+## Impact on Principle of Least Astonishment
+
+Semantic Versioning has a positive impact on the Principle of Least Astonishment. First of all, it is a very popular schema, used by many open-source projects. Second, adhering to clear and consistent rules for version numbering reduces confusion and surprises for developers and users of software packages. When version numbers follow a predictable pattern (Major.Minor.Patch), it becomes easier for stakeholders to understand the significance of each release. This predictability enhances the user experience and makes it easier to manage software dependencies.
+
+## Impact on Principle of Developer Happiness
+
+Semantic Versioning contributes to the Principle of Developer Happiness. It provides developers with a systematic approach to versioning, which simplifies the process of releasing and upgrading software packages. Developers can confidently make changes to their codebase while following SemVer guidelines, knowing that version numbers convey the impact of those changes. This reduces the stress associated with managing dependencies and allows developers to focus on building and improving their software.
+
+## Impact on Principle of Least Effort
+
+Semantic Versioning aligns with the Principle of Least Effort by streamlining the management of software dependencies. When developers adhere to SemVer, they can make backward-compatible changes without having to release new major versions. This reduces the effort required to maintain and update software packages. Additionally, clear documentation of public APIs and the use of version numbers to indicate compatibility further simplify the integration of dependencies, minimizing the effort needed to ensure smooth interactions between software components.
+
+## Usage of SemVer in early development phases
+
+During the early development of the NeoHaskell project, the major version will be kept at 0, so that the community can expect breaking changes to occur frequently. Once the project reaches a stable state, the major version will be incremented to 1, indicating that breaking changes will be made less frequently.
+
+## Standardizing the use of SemVer
+
+The Semantic Versioning schema is advised as a standard for all NeoHaskell projects, as it will help all of the ecosystem to be in sync.
+
+The `neo` CLI tool will easily help bumping versions, as it will inspect the exported functions and types and will suggest the next version based on the changes made.
+
+## Considerations
+
+Note that even though the API of a package is not changed, the implementation of a function can be changed, which can lead to different results. This is considered a breaking change and should be reflected in the version number.
+
+Take a look at this [GitHub thread](https://github.com/semver/semver/issues/311) for examples and more information.
