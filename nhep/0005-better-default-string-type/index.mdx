@@ -1,0 +1,40 @@
+---
+title: NHEP 5 - Better Default String Type
+authors: [siriusstarr]
+date: 2023-10-21T00:00
+---
+
+:::tip STATUS - DRAFT
+:::
+
+## Introduction
+
+By default, Haskell's `String` type is only an alias for `[Char]` and as such is inefficient for non-trivial uses (e.g. due to slow appends). The `text` package provides a more sensible `Text` type and has become essentially the standard within the Haskell ecosystem.
+
+NeoHaskell should use `Text` as its default string type under the more familiar name `String` and support literals via the standard `"double quoted"` syntax.
+
+## Impact on Principle of Least Astonishment
+
+The fact that a simple string literal is inefficient and usually undesirable violates the Principle of Least Astonishment. Most new programmers expect `String` and `"string literals"` to work as expected without any additional effort. This change will align NeoHaskell with those expectations.
+
+## Impact on Principle of Developer Happiness
+
+As noted below, this change will require less boilerplate of developers and allow them to get to actual code faster. Eliminating the use of `OverloadedStrings` will also cut down on unexpected type errors.
+
+## Impact on Principle of Least Effort
+
+Currently, nearly every Haskell project requires a dependency on `text` and files are littered with `import Data.Text`s and `{-# LANGUAGE OverloadedStrings #-}`s. This change will eliminate all of that overhead and allow the use of a sensible string type with better ergonomics.
+
+## Implementation
+
+In early stages, this can be achieved via prelude and pragmas by `newtype`ing `Text` to `String` and use of `OverloadedStrings` with:
+
+```haskell
+default IsString String -- where String is the new type over Text
+```
+
+## Considerations
+
+Since `Text` is the standard for most of the Haskell ecosystem, this change is unlikely to have many negative ramifications, other than possible confusion over the `String` type in NeoHaskell actually being `Text` and not `String`, but this is only of concern for developers stepping outside of the NeoHaskell ecosystem.
+
+Another consideration is the existence of the other common data type `ByteString`. `Text` is more often the sensible default for all except extremely performance-critical applications, so this should not be a problem.
