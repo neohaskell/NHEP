@@ -1,7 +1,7 @@
 ---
 title: NHEP 6 - Better Default List Type
 authors: [siriusstarr]
-date: 2023-10-21T00:00
+date: 2023-10-21T00:02
 ---
 
 :::tip STATUS - DRAFT
@@ -35,8 +35,8 @@ default IsList Vector -- or Seq
 
 ## Considerations
 
-Haskell's default lists are more efficient for LIFO queues than either of these data types.  There could, however, be a `Queue` data type or the like to push developers in that when it's desirable.
+Haskell's default lists are more efficient for LIFO queues than either of these data types. There could, however, be a `Queue` data type or the like to push developers in that when it's desirable.
 
 List comprehensions (if they will be in NeoHaskell) would need to support this data type as well.
 
-`Vector` is not pattern-matchable on.  `Seq` does not have this issue, which might be a point in favor of it.
+`Vector` is not pattern-matchable on. `Seq` does not have this issue, which might be a point in favor of it.
