@@ -1,0 +1,42 @@
+---
+title: NHEP 6 - Better Default List Type
+authors: [siriusstarr]
+date: 2023-10-21T00:00
+---
+
+:::tip STATUS - DRAFT
+:::
+
+## Introduction
+
+By default, Haskell's `List` type is a simple linked list and as such is inefficient for many common operations (getting by index, appending, iterating from the end, etc.). A number of other more efficient list-like data structures are available, most notably the array-like `Vector` and the list-like `Seq`.
+
+NeoHaskell should choose one of these two data structures as its default list type and support literals via the standard `[1, 2, 3]` syntax.
+
+## Impact on Principle of Least Astonishment
+
+The fact that a simple list literal is inefficient to append or get by index and usually undesirable violates the Principle of Least Astonishment. Most new programmers expect sytactic sugar like `[1, 2, 3]"` to produce a commonly desirable data type without any additional effort. This change will align NeoHaskell with those expectations.
+
+## Impact on Principle of Developer Happiness
+
+As noted below, this change will require less boilerplate of developers and allow them to get to actual code faster, as well as gently guiding developers to choose a data type without them having to decide which to use.
+
+## Impact on Principle of Least Effort
+
+Currently, nearly every Haskell project requires a dependency on `containers` and/or `vector` and files are littered with `import`s and `{-# LANGUAGE OverloadedList #-}`s. This change will eliminate all of that overhead and allow the use of a sensible list type with better ergonomics.
+
+## Implementation
+
+In early stages, this can be achieved via prelude and pragmas by the use of `OverloadedLists` with:
+
+```haskell
+default IsList Vector -- or Seq
+```
+
+## Considerations
+
+Haskell's default lists are more efficient for LIFO queues than either of these data types.  There could, however, be a `Queue` data type or the like to push developers in that when it's desirable.
+
+List comprehensions (if they will be in NeoHaskell) would need to support this data type as well.
+
+`Vector` is not pattern-matchable on.  `Seq` does not have this issue, which might be a point in favor of it.
