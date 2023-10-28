@@ -1,0 +1,34 @@
+---
+title: NHEP 7 - More Concise Type Signature Syntax
+authors: [siriusstarr]
+date: 2023-10-26T00:00
+---
+
+:::tip STATUS - DRAFT
+:::
+
+## Introduction
+
+Haskell uses `::` for type signatures (and the shorter `:` for cons). Type signatures are generally far, far more numerous than cons operations/pattern matches, and so most Haskell-descended languages have chosen to use `:` for type signatures instead, for the sake of cleaner-looking code and fewer developer keypresses. `:` for cons does highlight the importance of lists in the original conception of Haskell, but with the default list type possibly changing (per [NHEP 6](https://neohaskell.org/blog/0006-better-default-list-type)), it will likely be de-emphasized in NeoHaskell.
+
+NeoHaskell should use a single colon `:` to denote type signatures instead.
+
+## Impact on Principle of Least Astonishment
+
+Most languages descended from Haskell have made this change, including Elm, Idris, and Agda. Additionally, many unrelated languages use the same syntax for types, including F#, Dhall, and OCaml, or similar syntax featuring a single colon, e.g. TypeScript, Elixir, Rust, and Python (for type hints).
+
+Almost no other language except Purescript uses `::` while all of the aforementioned use `:` in some capacity, so this change will make NeoHaskell's syntax more intuitive to non-Haskell developers.
+
+## Impact on Principle of Developer Happiness
+
+Since there are far, far more type signatures than cons in most Haskell code, this change renders syntax visually cleaner, more familiar, and reduces the number of required keypresses.
+
+## Impact on Principle of Least Effort
+
+As mentioned above, this change reduces the number of required keypresses to write a type signature.
+
+## Considerations
+
+This will require a change to the cons operator of lists. `::` is of course available, though that could perhaps be used for a new default list type instead per [NHEP 6](https://neohaskell.org/blog/0006-better-default-list-type). Regardless, this decision must be made as well.
+
+This change will render NeoHaskell slightly less familiar to Haskell developers. However, as noted above, most other languages descended from Haskell have made the same change, and it is unlikely to cause significant friction.
