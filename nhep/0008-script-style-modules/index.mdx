@@ -1,0 +1,219 @@
+---
+title: NHEP 8 - Script-style modules
+authors: [nick]
+date: 2023-11-08T00:00
+---
+
+:::tip STATUS - DRAFT
+:::
+
+## Introduction
+
+Haskell doesn't allow writing code directly in a file, with the intent of running it as a script.
+Similarly to Java, Rust or C, it forces the user to put the code that is going to be run in a `main` function.
+
+Contrary to Java or the others, the syntax is extremely useful for scripts, as it is expressive and concise.
+There are solutions like `runhaskell` that allow you to run a Haskell file that defines a `main` function,
+and users are already using it for scripts. For example, the widely used library [ghc-lib uses it for their CI/CD processes](https://github.com/digital-asset/ghc-lib/blob/master/CI.hs).
+
+## Possible Implementation
+
+Imports would be parsed and put at the top level, the rest would be inside of a `main` function. The users would have to run the module's `main` function explicitly, so there are no unexpected side effects on imports.
+
+### Example with no exports
+
+```haskell
+module MyScript where
+
+import File
+
+foo <- File.read "foo.txt"
+
+myFunction :: Int -> String
+myFunction n =
+  Int.toString n + foo
+```
+
+This would be compiled to:
+
+```haskell
+module MyScript where
+
+import File
+
+main = do
+  foo <- File.read "foo.txt"
+
+  myFunction :: Int -> String
+  myFunction n =
+    Int.toString n + foo
+
+  pass    -- This is a function that does nothing but is required to make the main function valid
+```
+
+### Example with exports
+
+The complexity is exporting symbols. If one would want to export some kind of function or data type from this kind of module, those would have to be put at the top level, which means that they wouldn't be allowed to use stuff from the scope they're defined with. E.g.
+
+```haskell
+module MyScript (myFunction) where
+
+import File
+
+foo <- File.read "foo.txt"
+
+myFunction :: Int -> String
+myFunction n =
+  Int.toString n + foo
+```
+
+This would be compiled to:
+
+```haskell
+module MyScript (myFunction, main) where
+
+import File
+
+myFunction :: Int -> String
+myFunction n =
+  Int.toString n + foo     -- Woops, foo is not defined!
+
+main = do
+  foo <- File.read "foo.txt"
+  pass
+```
+
+A solution would be to have a compile-time marker that marks the function as reexported in a script-style module, and if it has a `<symbol>  is not in scope` error, tell that it is not allowed to do that kind of stuff because it is introducing side effects, and we would direct the user to the proper documentation that explains why not.
+
+Another solution, which is a double-edged blade, is to do some symbol tracking and if the function has to be reexported to the top level, we create a top-level mutable reference that:
+
+1. Is **NOT** reexported
+2. Is initialized in `main`
+3. The function does an unsafe read of the mutable reference, using that value.
+
+This has the problem that if `main` hasn't been called, this would fail in runtime.
+
+A naive solution would be to introduce a runtime check, but that would make the code slower, and we'd introduce a
+runtime error that would be hard to debug, which goes against the principles of NeoHaskell.
+
+A possibility would be to have another compile-time check, that would disallow the usage of the function if the
+`main` function of that module hasn't been called yet. Still, that is a complex task to implement, as we'd have to
+figure out a way to track that, especially when branching is introduced, or even when concurrency is at play.
+
+## Impact on Principle of Least Astonishment
+
+Most languages nowadays allow writing scripts directly in a file, so it would not be surprising for users to be able to do that in NeoHaskell.
+
+On the other hand, having the separation between the import and the module initialization is something not common at
+all in other languages, so it is a very alien thing unless we manage to find a way to make it more familiar.
+
+A possibility here could be that script-style modules are not allowed to export anything, as they are scripts,
+meant to be run directly, and not imported.
+
+Also, another possibility would be to have main to return a record of functions, as scripts do not return anything.
+(They can print stuff, and write to files, but they do not return anything, apart from an exit code).
+
+This could introduce a powerful tool for defining services, as the service initialization would be done in the main
+function and the service would be returned as a record of functions, which would be the API of the service:
+
+```haskell
+module ProductService (
+  count,
+  deleteById
+) where
+
+import File
+import Env
+
+dbFile <- Env.get "DB_FILE"
+          |> orElse "db.sqlite"
+
+tableName <- Env.get "TABLE_NAME"
+             |> orElse "products"
+
+db <- File.read dbFile
+
+count :: IO Int
+count = ...
+
+deleteById :: UUID -> IO
+deleteById id = ...
+```
+
+If we wrapped everything into a function named `init` making it compile to the following, it would enable
+a very interesting pattern for defining services:
+
+```haskell
+module ProductService (
+  count,
+  deleteById
+) where
+
+data ProductService = ProductService {
+  count :: IO Int,
+  deleteById :: UUID -> IO
+}
+
+init :: IO ProductService
+init = do
+  dbFile <- Env.get "DB_FILE"
+            |> orElse "db.sqlite"
+
+  tableName <- Env.get "TABLE_NAME"
+               |> orElse "products"
+
+  db <- File.read dbFile
+
+  count :: IO Int
+  count = ...
+
+  deleteById :: UUID -> IO
+  deleteById id = ...
+
+  yield ProductService {
+    count,
+    deleteById,
+  }
+```
+
+So now, some code that would use this service could do the following:
+
+```haskell
+import ProductService
+
+main = do
+  product <- ProductService.init
+  totalProducts <- product.count
+  print (Int.toString totalProducts)
+```
+
+Perhaps, at this point, it'd make sense to introduce a new keyword for defining services, instead of
+relying on `module`? Maybe `service`?
+
+```haskell
+service ProductService (
+  count,
+  deleteById
+) where
+
+-- and so on...
+```
+
+## Impact on Principle of Developer Happiness
+
+Many technologies allow the use of the same language as a way of configuring the application/project, for example,
+in Ruby they use the language itself to define project dependencies or even the specification of the project.
+[Here's the gemspec file of Ruby on Rails](https://github.com/rails/rails/blob/main/rails.gemspec).
+
+On the other hand, instead of writing scripts with Bash, Python or Ruby, one could use NeoHaskell, which is a much
+more powerful language, and it would allow the user to use the same language for everything. Nowadays, people
+are using Python in an "explorative" manner, where they write scripts and keep tweaking them until they get the
+desired result, and then they put that into their application.
+
+## Impact on Principle of Least Effort
+
+This removes the necessity of having to write a `main` function, which is a very small thing, but it is still
+something that the user has to do, and it is not something that is needed in other languages.
+
+On the other hand, this does introduce many implementation tasks in the NeoHaskell codebase, so it is not something
+that can be done in a short amount of time.
